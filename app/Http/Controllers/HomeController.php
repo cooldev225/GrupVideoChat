@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Room;
 use App\Models\RoomCharge;
+use Illuminate\Support\Facades\Auth;
 
-use TwilioRestClient;
-use TwilioJwtAccessToken;
-use TwilioJwtGrantsVideoGrant;
+use Twilio\Rest\Client;
+use Twilio\Jwt\AccessToken;
+use Twilio\Jwt\Grants\VideoGrant;
 
 class HomeController extends Controller
 {
@@ -70,44 +71,39 @@ class HomeController extends Controller
     {
         $room_id=$request->route('room_id');
         $room=Room::find($room_id);
-        if($room->stream==''){
-            $client = new Client($this->sid, $this->token);
-            $exists = $client->video->rooms->read([ 'uniqueName' => $room->name]);
-            if (empty($exists)) {
-                $client->video->rooms->create([
-                    'uniqueName' => $room->name,
-                    'type' => 'group',
-                    'recordParticipantsOnConnect' => false
-                ]);
-                \Log::debug("created new room: ".$room->name);
-            }
+        $client = new Client($this->sid, $this->token);
+        $exists = $client->video->rooms->read([ 'uniqueName' => $room->name]);
+        if(empty($exists)){
+            $client->video->rooms->create([
+                'uniqueName' => $room->name,
+                'type' => 'group',
+                'recordParticipantsOnConnect' => false
+            ]);
+            \Log::debug("created new room: ".$room->name);
             $room->owner=Auth::id();
         }
-            // A unique identifier for this user
-            $identity = Auth::user()->name;
-            \Log::debug("joined with identity: $identity");
-            $token = new AccessToken($this->sid, $this->key, $this->secret, 3600, $identity);
-            $videoGrant = new VideoGrant();
-            $videoGrant->setRoom($room->name);
-            $token->addGrant($videoGrant);
-            
-            $room->stream=$token->toJWT();
-            $room->save();
-            $charge=RoomCharge::select()->where('room_id',$room->id)->where('user_id',Auth::id());
-            if($charge->count()){
-                $charge=$charge->get()[0];
-                $charge->room_id=$room->id;
-                $charge->user_id=Auth::id();
-                $charge->created_at=date('Y-m-d H:i:s');
-            }
-            else $charge=new RoomCharge;
-            $charge->updated_at=date('Y-m-d H:i:s');
-            $charge->save();
-            
-            return view('room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name ]);
-
+        // A unique identifier for this user
+        $identity = Auth::user()->name;
+        \Log::debug("joined with identity: $identity");
+        $token = new AccessToken($this->sid, $this->key, $this->secret, 3600, $identity);
+        $videoGrant = new VideoGrant();
+        $videoGrant->setRoom($room->name);
+        $token->addGrant($videoGrant);
         
-        //return view('video-broadcast', ['type' => 'broadcaster', 'id' => Auth::id()]);
-        //return view('room');
+        $room->stream=(Auth::id()).date('_Y_m_d_H_i_s');//$token->toJWT();
+        $room->save();
+        $charge=RoomCharge::select()->where('room_id',$room->id)->where('user_id',Auth::id());
+        if($charge->count())$charge=$charge->get()[0];                
+        else{
+            $charge=new RoomCharge;
+            $charge->room_id=$room->id;
+            $charge->user_id=Auth::id();
+            $charge->created_at=date('Y-m-d H:i:s');
+        }
+        $charge->updated_at=date('Y-m-d H:i:s');
+        $charge->save();
+        
+        return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name ]);
+
     }
 }

@@ -6,11 +6,7 @@
        Video Chat Rooms
    </div>
 
-   {!! Form::open(['url' => 'room/create']) !!}
-       {!! Form::label('roomName', 'Create or Join a Video Chat Room') !!}
-       {!! Form::text('roomName') !!}
-       {!! Form::submit('Go') !!}
-   {!! Form::close() !!}
+  
 
    @if($_rooms)
    @foreach ($_rooms as $room)
