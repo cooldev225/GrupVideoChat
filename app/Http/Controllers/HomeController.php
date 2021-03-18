@@ -60,6 +60,7 @@ class HomeController extends Controller
         foreach($rooms as $room){
             $room_charges[$room['id']]=RoomCharge::select('users.*')
                     ->leftJoin('users','users.id','=','room_charges.user_id')
+                    ->where('room_charges.room_id',$room['id'])
                     ->orderBy('room_charges.created_at','desc')->get();
         }        
         return view('frontend.rooms_view',[
@@ -81,6 +82,8 @@ class HomeController extends Controller
             ]);
             \Log::debug("created new room: ".$room->name);
             $room->owner=Auth::id();
+            $room->stream=(Auth::id()).date('_Y_m_d_H_i_s');//$token->toJWT();
+            $room->save();
         }
         // A unique identifier for this user
         $identity = Auth::user()->firstName;
@@ -90,20 +93,25 @@ class HomeController extends Controller
         $videoGrant->setRoom($room->name);
         $token->addGrant($videoGrant);
         
-        $room->stream=(Auth::id()).date('_Y_m_d_H_i_s');//$token->toJWT();
-        $room->save();
-        $charge=RoomCharge::select()->where('room_id',$room->id)->where('user_id',Auth::id());
+        //return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name , 'room_id'=>$room_id]);
+        return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name , 'room_id'=>$room_id, 'sid'=>$this->sid, 'token'=>$this->token, 'key'=>$this->key, 'secret'=>$this->secret]);
+    }
+
+    public function addCharge(Request $request){
+        $room_id=$request->input('room_id');
+        $charge=RoomCharge::select()->where('room_id',$room_id)->where('user_id',Auth::id());
         if($charge->count())$charge=$charge->get()[0];                
         else{
             $charge=new RoomCharge;
-            $charge->room_id=$room->id;
+            $charge->room_id=$room_id;
             $charge->user_id=Auth::id();
             $charge->created_at=date('Y-m-d H:i:s');
         }
         $charge->updated_at=date('Y-m-d H:i:s');
         $charge->save();
-        
-        return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name ]);
-
+    }
+    public function delCharge(Request $request){
+        $room_id=$request->input('room_id');
+        $charge=RoomCharge::select()->where('room_id',$room_id)->where('user_id',Auth::id())->delete();
     }
 }

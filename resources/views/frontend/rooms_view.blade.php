@@ -71,6 +71,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @if($room['size']-count($room_charges[$room['id']])>0)
                                         <ul class="ant-card-actions">
                                             <li style="width: 100%;">
                                                 <span>
@@ -85,6 +86,7 @@
                                                 </span>
                                             </li>
                                         </ul>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
