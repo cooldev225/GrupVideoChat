@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
         $this->sid = config('services.twilio.sid');
         $this->token = config('services.twilio.token');
         $this->key = config('services.twilio.key');
@@ -83,7 +83,7 @@ class HomeController extends Controller
             $room->owner=Auth::id();
         }
         // A unique identifier for this user
-        $identity = Auth::user()->name;
+        $identity = Auth::user()->firstName;
         \Log::debug("joined with identity: $identity");
         $token = new AccessToken($this->sid, $this->key, $this->secret, 3600, $identity);
         $videoGrant = new VideoGrant();

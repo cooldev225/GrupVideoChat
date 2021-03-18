@@ -35,7 +35,7 @@ class DashboardComposer
         $view->with('_currentUrl', $_currentUrl);
         $view->with('currentUrl', $currentUrl);
 
-        if($notification=DbUtil::getDevAlert()!='')$view->with('notification', $notification);
+        //if($notification=DbUtil::getDevAlert()!='')$view->with('notification', $notification);
 
         if(request()->get('lang')){
             app()->setLocale(request()->get('lang'));

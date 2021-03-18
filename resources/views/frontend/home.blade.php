@@ -10,7 +10,7 @@
 
    @if($_rooms)
    @foreach ($_rooms as $room)
-       <a href="{{ url('/room/join/'.$room) }}">{{ $room }}</a>
+       <a href="javascript:;">{{ $room }}</a>
    @endforeach
    @endif
 </div>

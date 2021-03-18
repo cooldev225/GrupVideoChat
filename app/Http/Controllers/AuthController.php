@@ -80,7 +80,7 @@ class AuthController extends Controller
                 $session->user_agent='';
                 $session->payload='login';
                 $session->last_activity=1;
-                $session->save();
+                //$session->save();
             }
             $request->session()->regenerate();
             $row=new LastLogin;
@@ -109,7 +109,7 @@ class AuthController extends Controller
         $email = $request->input('email');
         if($email==null)return view('frontend.auth.login',['page_title' => 'Forgot']);
         $_user = User::where('email', $email)
-            ->select('id as userId', 'email as userEmail', 'username as userName', 'first_name as firstName', 'last_name as lastName')
+            ->select('id as userId', 'email as userEmail', 'username as userName', 'firstName as firstName', 'lastName as lastName')
             ->get();
         if($_user && count($_user) === 1)
         {

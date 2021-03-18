@@ -1,4 +1,4 @@
-@extends('frontend.layouts.empty')
+@extends('backend.layouts.empty')
 @section('content')
 <link href="metronic/css/pages/login/login-2.css" rel="stylesheet" type="text/css"/>
 <input type="hidden" name="error" id="error" value="{{isset($error)?$error:''}}" />

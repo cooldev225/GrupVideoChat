@@ -24,11 +24,12 @@ Route::post('/forgot', 'AuthController@forgot');
 Route::get('/logout', 'AuthController@logout')->name('logout');
 
 
-Route::post('/getRoomsView', 'HomeController@getRoomsView');
-Route::get('/room/{room_id}', 'HomeController@room');
+
 
 Route::group(['middleware' => ['login']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::post('/getRoomsView', 'HomeController@getRoomsView');
+    Route::get('/room/{room_id}', 'HomeController@room');
 });
 
 Route::group(['middleware' => ['login']], function () {
