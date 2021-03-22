@@ -52,7 +52,10 @@ class HomeController extends Controller
             echo "Error: " . $e->getMessage();
         }
         return view('frontend.home',[
-            '_rooms'=>$rooms
+            '_rooms'=>$rooms,
+            'avatar'=>Auth::user()->avatar,
+            'full_name'=>Auth::user()->firstName." ".Auth::user()->lastName,
+            'email'=>Auth::user()->email,
         ]);
     }
     public function getRoomsView(){
@@ -113,5 +116,22 @@ class HomeController extends Controller
     public function delCharge(Request $request){
         $room_id=$request->input('room_id');
         $charge=RoomCharge::select()->where('room_id',$room_id)->where('user_id',Auth::id())->delete();
+    }
+
+    public function addRoom(Request $request){
+        $room_size=$request->input('room_size');
+        $room_name=$request->input('room_name');
+        $room=Room::select()->where('name',$room_name);
+        if($room->count())return 'Error! there is exist the topic.';
+        $room=new Room;
+        $room->name=$room_name;
+        $room->size=$room_size;
+        $room->stream='';
+        $room->state=0;
+        $room->owner=Auth::id();
+        $room->created_at=date('Y-m-d H:i:s');
+        $room->updated_at=date('Y-m-d H:i:s');
+        $room->save();
+        return 'success';
     }
 }

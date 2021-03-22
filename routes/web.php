@@ -32,6 +32,7 @@ Route::group(['middleware' => ['login']], function () {
     Route::get('/room/{room_id}', 'HomeController@room');
     Route::post('/addCharge', 'HomeController@addCharge');
     Route::post('/delCharge', 'HomeController@delCharge');
+    Route::post('/addRoom', 'HomeController@addRoom');
 });
 
 Route::group(['middleware' => ['login']], function () {
