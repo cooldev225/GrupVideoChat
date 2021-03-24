@@ -113,7 +113,8 @@ class HomeController extends Controller
             'token'=>$this->token, 
             'key'=>$this->key, 
             'secret'=>$this->secret,
-            'sel_user'=>Auth::id()
+            'sel_user'=>Auth::id(),
+            'sel_avatar'=>Auth::user()->avatar,
         ]);
     }
 
@@ -155,12 +156,24 @@ class HomeController extends Controller
     public function loadRoomState(Request $request){
         $room_id=$request->input('room_id');
         $sel_user=$request->input('sel_user');
+        $sel_avatar="!!!";
         $room_charges=RoomCharge::select('users.*')
                     ->leftJoin('users','users.id','=','room_charges.user_id')
                     ->where('room_charges.room_id',$room_id)
                     ->orderBy('room_charges.created_at','desc')->get();
+        foreach($room_charges as $user){
+            if($sel_user==$user['id']){
+                $sel_avatar=$user['avatar'];
+                break;
+            }
+        }
+        if($sel_avatar=="!!!"&&count($room_charges)){
+            $sel_user=$room_charges[0]['id'];
+            $sel_avatar=$room_charges[0]['avatar'];
+        }
         return view('frontend.room_users',[
             'sel_user' => $sel_user,
+            'sel_avatar'=>$sel_avatar,
             'room_users' => $room_charges,
         ]);
     }

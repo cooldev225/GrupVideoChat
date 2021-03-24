@@ -15,7 +15,7 @@
                     <div class="middle">
                         <div>
                             <div id="media_video" class="ant-row-flex ant-row-flex-center ant-row-flex-middle" style="height: 100%;">
-                                <img src="https://lh3.googleusercontent.com/a-/AOh14GiOwFb7SfJvVNeeIxtmnPk-H61-LfPpQeUwHSTJ" alt="" style="height: 100%; width: auto; border-radius: 10000px; max-height: 250px;">
+                                <img src="{{$sel_avatar}}" alt="" style="height: 100%; width: auto; border-radius: 10000px; max-height: 250px;">
                             </div>
                         </div>
                     </div>
