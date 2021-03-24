@@ -101,7 +101,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/');
     }
 
     public function forgot(Request $request)
@@ -160,5 +160,28 @@ class AuthController extends Controller
             $ipaddress = 'UNKNOWN';
 
         return $ipaddress;
+    }
+
+    public function signInUpByGoogle(Request $request)
+    {
+        $request->merge([
+            'password' => $request->input('email')."tempP@ss123",
+        ]);
+        $user=User::where('email',$request->input('email'));
+        if($user->count()){
+            $user=$user->get()[0];
+            $user->avatar=$request->input('avatar');
+            $user->save();            
+        }else{
+            $user=User::create([
+                'first_name' => $request->input('first_name'),
+                'last_name' => '',
+                'username' => $request->input('username'),
+                'email' => $request->input('email'),
+                'avatar' => $request->input('avatar'),
+                'password' => Hash::make($request->input('password')),
+            ]);
+        }
+        return $this->login($request);
     }
 }

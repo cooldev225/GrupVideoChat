@@ -71,7 +71,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if($room['size']-count($room_charges[$room['id']])>0)
+                                        @if($room['size']-count($room_charges[$room['id']])>0&&$is_logged_in)
                                         <ul class="ant-card-actions">
                                             <li style="width: 100%;">
                                                 <span>

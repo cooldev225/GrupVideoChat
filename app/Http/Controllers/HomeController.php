@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        
         $this->sid = config('services.twilio.sid');
         $this->token = config('services.twilio.token');
         $this->key = config('services.twilio.key');
@@ -51,12 +51,18 @@ class HomeController extends Controller
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
         }
-        return view('frontend.home',[
-            '_rooms'=>$rooms,
-            'avatar'=>Auth::user()->avatar,
-            'full_name'=>Auth::user()->firstName." ".Auth::user()->lastName,
-            'email'=>Auth::user()->email,
-        ]);
+        if(Auth::user()==null)
+            return view('frontend.home',[
+                'is_logged_in'=>false,
+            ]);
+        else     
+            return view('frontend.home',[
+                'is_logged_in'=>true,
+                '_rooms'=>$rooms,
+                'avatar'=>Auth::user()->avatar,
+                'full_name'=>Auth::user()->firstName." ".Auth::user()->lastName,
+                'email'=>Auth::user()->email,
+            ]);
     }
     public function getRoomsView(){
         $rooms=Room::select()->orderBy('created_at','desc')->get();
@@ -67,6 +73,7 @@ class HomeController extends Controller
                     ->orderBy('room_charges.created_at','desc')->get();
         }        
         return view('frontend.rooms_view',[
+            'is_logged_in'=>Auth::user()!=null,
             'rooms' => $rooms,
             'room_charges' => $room_charges,
         ]);

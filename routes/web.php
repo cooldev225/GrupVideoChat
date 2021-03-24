@@ -25,10 +25,10 @@ Route::get('/logout', 'AuthController@logout')->name('logout');
 
 
 
-
+Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/getRoomsView', 'HomeController@getRoomsView');
+Route::post('/signInUpByGoogle', 'AuthController@signInUpByGoogle');
 Route::group(['middleware' => ['login']], function () {
-    Route::get('/home', 'HomeController@index')->name('home');
-    Route::post('/getRoomsView', 'HomeController@getRoomsView');
     Route::get('/room/{room_id}', 'HomeController@room');
     Route::post('/addCharge', 'HomeController@addCharge');
     Route::post('/delCharge', 'HomeController@delCharge');
