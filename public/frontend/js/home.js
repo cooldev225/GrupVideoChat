@@ -19,10 +19,6 @@ jQuery(document).ready(function() {
 });
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); 
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail());
     var form_data = new FormData();
     form_data.append('first_name',profile.getName());
     form_data.append('username',profile.getId());
@@ -55,7 +51,6 @@ function showCreateModal(){
     $('.ghost-div').css('top',-140);
     $('#room_name').val('');
     $('.ant-modal').fadeIn();
-    testsign();
 }
 function refresh_rooms(){
     var form_data = new FormData();

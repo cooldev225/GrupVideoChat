@@ -24,7 +24,7 @@
                         <div class="ant-row-flex ant-row-flex-space-between ant-row-flex-middle">
                             <div class="ant-col">
                                 <span class="ant-avatar ant-avatar-circle ant-avatar-image" style="width: 30px; height: 30px; line-height: 30px; font-size: 18px;">
-                                    <img src="images/avatar/{{$avatar}}" alt="avatar">
+                                    <img src="{{$avatar}}" alt="avatar">
                                 </span>
                             </div>
                             <div class="ant-col">
@@ -41,7 +41,7 @@
                         <ul class="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical" role="menu" tabindex="0">
                             <li class="ant-dropdown-menu-item ant-dropdown-menu-item-disabled" role="menuitem" aria-disabled="true" style="text-align: center;">
                                 <span class="ant-avatar ant-avatar-circle ant-avatar-image" style="width: 64px; height: 64px; line-height: 64px; font-size: 18px;">
-                                    <img src="images/avatar/{{$avatar}}">
+                                    <img src="{{$avatar}}">
                                 </span>
                                 <div>{{$full_name}}</div>
                                 <div>{{$email}}</div>

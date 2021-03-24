@@ -170,12 +170,13 @@ class AuthController extends Controller
         $user=User::where('email',$request->input('email'));
         if($user->count()){
             $user=$user->get()[0];
+            $user->firstName=$request->input('first_name');
             $user->avatar=$request->input('avatar');
             $user->save();            
         }else{
             $user=User::create([
-                'first_name' => $request->input('first_name'),
-                'last_name' => '',
+                'firstName' => $request->input('first_name'),
+                'lastName' => '',
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
                 'avatar' => $request->input('avatar'),

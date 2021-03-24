@@ -1,4 +1,5 @@
 jQuery(document).ready(function() {
+    addCharge();
     Twilio.Video.createLocalTracks({
         audio: true,
         video: { width: 300 }
@@ -48,7 +49,7 @@ function participantConnected(participant) {
    participant.on('trackRemoved', trackRemoved);
    document.getElementById('media-div').appendChild(div);
 
-   addCharge();
+   
 }
 
 function participantDisconnected(participant) {
