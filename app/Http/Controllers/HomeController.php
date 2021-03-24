@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Room;
 use App\Models\RoomCharge;
+use App\Models\Webhook;
 use Illuminate\Support\Facades\Auth;
 
 use Twilio\Rest\Client;
@@ -96,7 +97,7 @@ class HomeController extends Controller
             $room->save();
         }
         // A unique identifier for this user
-        $identity = Auth::user()->firstName;
+        $identity = Auth::user()->username;
         \Log::debug("joined with identity: $identity");
         $token = new AccessToken($this->sid, $this->key, $this->secret, 3600, $identity);
         $videoGrant = new VideoGrant();
@@ -104,12 +105,21 @@ class HomeController extends Controller
         $token->addGrant($videoGrant);
         
         //return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name , 'room_id'=>$room_id]);
-        return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name , 'room_id'=>$room_id, 'sid'=>$this->sid, 'token'=>$this->token, 'key'=>$this->key, 'secret'=>$this->secret]);
+        return view('frontend.room', [ 
+            'accessToken' => $token->toJWT(),
+            'roomName' => $room->name , 
+            'room_id'=>$room_id, 
+            'sid'=>$this->sid, 
+            'token'=>$this->token, 
+            'key'=>$this->key, 
+            'secret'=>$this->secret,
+            'sel_user'=>Auth::id()
+        ]);
     }
 
     public function addCharge(Request $request){
         $room_id=$request->input('room_id');
-        $charge=RoomCharge::select()->where('room_id',$room_id)->where('user_id',Auth::id());
+        $charge=RoomCharge::select()->where('user_id',Auth::id());//->where('room_id',$room_id)
         if($charge->count())$charge=$charge->get()[0];                
         else{
             $charge=new RoomCharge;
@@ -122,7 +132,7 @@ class HomeController extends Controller
     }
     public function delCharge(Request $request){
         $room_id=$request->input('room_id');
-        $charge=RoomCharge::select()->where('room_id',$room_id)->where('user_id',Auth::id())->delete();
+        $charge=RoomCharge::select()->where('user_id',Auth::id())->delete();//->where('room_id',$room_id)
     }
 
     public function addRoom(Request $request){
@@ -140,5 +150,48 @@ class HomeController extends Controller
         $room->updated_at=date('Y-m-d H:i:s');
         $room->save();
         return 'success';
+    }
+
+    public function loadRoomState(Request $request){
+        $room_id=$request->input('room_id');
+        $sel_user=$request->input('sel_user');
+        $room_charges=RoomCharge::select('users.*')
+                    ->leftJoin('users','users.id','=','room_charges.user_id')
+                    ->where('room_charges.room_id',$room_id)
+                    ->orderBy('room_charges.created_at','desc')->get();
+        return view('frontend.room_users',[
+            'sel_user' => $sel_user,
+            'room_users' => $room_charges,
+        ]);
+    }
+
+    public function videoWebhook(Request $request){
+        $str0=$request->getContent();
+        $str1="";
+        foreach ($request->all() as $key => $value) {
+            $str1.= "{".$key."=>".$value."},";
+        }
+        $row=new Webhook;
+        $row->identifier=">>>";
+        $row->title=">>>".$str0;
+        $row->notification_message=">>>".$str1;
+        $row->save();
+        $this->validate($request, $this->rules());
+
+        $webhook = Webhook::create($request->only(['title', 'notification_message']));
+
+        $url = config('app.url') . "/webhook/{$webhook->identifier}";
+
+        $result = [
+            'message' => "Webhook has been created successfully",
+            'data' => "Webhook URL is {$url}"
+        ];
+    }
+    protected function rules()
+    {
+        return [
+            'title' => 'required',
+            'notification_message' => 'required'
+        ];
     }
 }

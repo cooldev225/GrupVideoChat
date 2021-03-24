@@ -659,3 +659,44 @@ button, input, optgroup, select, textarea {
     overflow: auto;
     margin-left: 0px !important;
 }
+
+
+
+.ant-tabs .ant-tabs-left-bar, .ant-tabs .ant-tabs-right-bar {
+    height: 100%;
+    border-bottom: 0;
+}
+.ant-tabs .ant-tabs-right-bar {
+    float: right;
+    margin-bottom: 0;
+    margin-left: -1px;
+    border-left: 1px solid hsla(0,0%,100%,.12);
+}
+.ant-tabs .ant-tabs-right-content {
+    padding-right: 24px;
+    border-right: 1px solid hsla(0,0%,100%,.12);
+}
+
+
+.ant-tabs .ant-tabs-left-bar .ant-tabs-nav-container, .ant-tabs .ant-tabs-left-bar .ant-tabs-nav-wrap, .ant-tabs .ant-tabs-right-bar .ant-tabs-nav-container, .ant-tabs .ant-tabs-right-bar .ant-tabs-nav-wrap {
+    height: 100%;
+}
+.ant-tabs .ant-tabs-left-bar .ant-tabs-nav-wrap, .ant-tabs .ant-tabs-right-bar .ant-tabs-nav-wrap {
+    margin-bottom: 0;
+}
+.ant-tabs .ant-tabs-right-bar .ant-tabs-nav-container, .ant-tabs .ant-tabs-right-bar .ant-tabs-nav-wrap {
+    margin-left: -1px;
+}
+.ant-tabs .ant-tabs-left-bar .ant-tabs-nav-scroll, .ant-tabs .ant-tabs-right-bar .ant-tabs-nav-scroll {
+    width: auto;
+}
+.ant-tabs .ant-tabs-left-bar .ant-tabs-nav, .ant-tabs .ant-tabs-right-bar .ant-tabs-nav {
+    width: 100%;
+}
+.dtxMPz .slide-menu-tabs > .ant-tabs-bar.ant-tabs-right-bar .ant-tabs-tab > i {
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+[tabindex="-1"]:focus {
+    outline: none!important;
+}

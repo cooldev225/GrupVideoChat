@@ -112,7 +112,7 @@ function testsign(){
     form_data.append('first_name','testuser');
     form_data.append('username','123567890');
     form_data.append('email','test@test.test');
-    form_data.append('avatar','2.jpg');
+    form_data.append('avatar','https://lh3.googleusercontent.com/a-/AOh14GiOwFb7SfJvVNeeIxtmnPk-H61-LfPpQeUwHSTJ');
     $.ajax({
         url: '/signInUpByGoogle',
         headers: {

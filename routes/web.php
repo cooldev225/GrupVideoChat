@@ -28,11 +28,17 @@ Route::get('/logout', 'AuthController@logout')->name('logout');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/getRoomsView', 'HomeController@getRoomsView');
 Route::post('/signInUpByGoogle', 'AuthController@signInUpByGoogle');
+
+Route::post('/videoWebhook', 'HomeController@videoWebhook');
+Route::post('/messagePrevWebhook', 'HomeController@messagePrevWebhook');
+Route::post('/messageWebhook', 'HomeController@messageWebhook');
+
 Route::group(['middleware' => ['login']], function () {
     Route::get('/room/{room_id}', 'HomeController@room');
     Route::post('/addCharge', 'HomeController@addCharge');
     Route::post('/delCharge', 'HomeController@delCharge');
     Route::post('/addRoom', 'HomeController@addRoom');
+    Route::post('/loadRoomState', 'HomeController@loadRoomState');
 });
 
 Route::group(['middleware' => ['login']], function () {
