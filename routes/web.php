@@ -39,6 +39,7 @@ Route::group(['middleware' => ['login']], function () {
     Route::post('/delCharge', 'HomeController@delCharge');
     Route::post('/addRoom', 'HomeController@addRoom');
     Route::post('/loadRoomState', 'HomeController@loadRoomState');
+    Route::post('/updateToken', 'HomeController@updateToken');
 });
 
 Route::group(['middleware' => ['login']], function () {

@@ -1,4 +1,17 @@
+var video_element=null;
+var sel_identity=0;
+// Get handle to the chat div
+var $chatWindow = $('.sc-cmTdod.ktfjmN');
+// Our interface to the Chat service
+var chatClient;
+// A handle to the "general" chat channel - the one and only channel we
+// will have in this sample app
+var generalChannel;
+// The server will assign the client a random username - store that value
+// here
+var username;
 jQuery(document).ready(function() {
+    video_element=document.getElementById('media_video');
     $('#close_message_btn').on('click',function(){
         closeMessageNav();
     });
@@ -19,23 +32,51 @@ jQuery(document).ready(function() {
         room.participants.forEach(participantConnected);
         var previewContainer = document.getElementById(room.localParticipant.sid);
         if (!previewContainer || !previewContainer.querySelector('video')) {
-            alert(room.localParticipant.sid+' is lical user');
+            //alert(room.localParticipant.sid+' is lical user');
+            $('#media_video img').remove();
+            sel_identity=room.localParticipant.identity;
             participantConnected(room.localParticipant);
         }
 
         room.on('participantConnected', function(participant) {
             console.log("Joining: '" +  participant.identity +  "'");
-            alert(participant.identity+' added');
             participantConnected(participant);
+            if(sel_identity!=participant.identity)$(video_element).find('#video_'+participant.identity).css('display','none');
         });
 
         room.on('participantDisconnected', function(participant) {
             console.log("Disconnected: '"  + participant.identity +  "'");
-            alert(participant.identity+' exited');
             participantDisconnected(participant);
         });
     });
     // additional functions will be added after this point
+
+    // Initialize the Chat client
+    Twilio.Chat.Client.create($('#accessToken').val()).then(client => {
+        console.log('Created chat client');
+        chatClient = client;
+        chatClient.getSubscribedChannels().then(createOrJoinGeneralChannel);
+  
+        // when the access token is about to expire, refresh it
+        chatClient.on('tokenAboutToExpire', function() {
+          refreshToken(username);
+        });
+  
+        // if the access token already expired, refresh it
+        chatClient.on('tokenExpired', function() {
+          refreshToken(username);
+        });
+  
+        // Alert the user they have been assigned a random username
+        username = $('#sel_user').val();
+        print('You have been assigned a random username of: '
+        + '<span class="me">' + username + '</span>', true);
+  
+    }).catch(error => {
+        console.error(error);
+        print('There was an error creating the chat client:<br/>' + error, true);
+        print('Please check your .env file.', false);
+    });
 });
 function closeMessageNav(){
     $('.sc-hwwEjo.dtxMPz .ant-tabs').prop('class','ant-tabs ant-tabs-right slide-menu-tabs collapsed ant-tabs-vertical ant-tabs-line');
@@ -75,41 +116,50 @@ function closeMessageNav(){
 }
 function participantConnected(participant) {
    console.log('Participant "%s" connected', participant.identity);
-    alert(participant.identity+' participantConnected');
    //const div = document.createElement('div');
    //div.id = participant.sid;
    //div.setAttribute("style", "float: left; margin: 10px;");
    //div.innerHTML = "<div style='clear:both'>"+participant.identity+"</div>";
 
    participant.tracks.forEach(function(track) {
-        trackAdded($('#media_video'), track);//trackAdded(div, track);
+        trackAdded(video_element, track, participant.identity);
    });
 
    participant.on('trackAdded', function(track) {
-        trackAdded($('#media_video'), track);//trackAdded(div, track);
+        trackAdded(video_element, track, participant.identity);
    });
    participant.on('trackRemoved', trackRemoved);
    //document.getElementById('media-div').appendChild(div);   
+   loadRoomState();
 }
 
 function participantDisconnected(participant) {
    console.log('Participant "%s" disconnected', participant.identity);
    participant.tracks.forEach(trackRemoved);
    document.getElementById(participant.sid).remove();
-
+   loadRoomState();
    delCharge();
 }
 
-function trackAdded(div, track) {
-   div.appendChild(track.attach());
-   var video = div.getElementsByTagName("video")[0];
-   if (video) {
-       video.setAttribute("style", "max-width:300px;");
-   }
+function trackAdded(div, track, identity) {
+   var obj=track.attach();
+   //obj=obj.replace('<audio ','<audio id="audio_'+identity+'" ');
+   //obj=obj.replace('<video ','<video id="audio_'+identity+'" ');
+   console.log(obj);
+   div.appendChild(obj);
+   $(div).each('audio',function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
+   $(div).each('video',function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
+   //$(obj).find('video').prop('id','video_'+identity);
+   //$(obj).find('audio').prop('id','audio_'+identity);   
+   
+   //var video = div.getElementsByTagName("video")[0];
+   //if (video) {
+   //    video.setAttribute("style", "max-width:300px;");
+   //}
 }
 
-function trackRemoved(track) {alert('removed track');
-   track.detach().forEach( function(element) { element.remove();delCharge(); });
+function trackRemoved(track) {//alert('removed track');
+   track.detach().forEach( function(element) { element.remove(); });
 }
 
 function addCharge(){
@@ -174,9 +224,105 @@ function loadRoomState(){
         dataType: "text",
         success: function (response) {
             $('#room_users').html(response);
+            $('.avatar-btn').on('click',function(){
+                var identity=$(this).prop('id').replace('avatar_','');
+                if($(this).parent().hasClass('active'))return;
+                $('.c-ktHwxA.btyRFv').removeClass('active');
+                $('.sc-cIShpX.kQqkBu').removeClass('active');
+                $(this).parent().parent().find('.c-ktHwxA.btyRFv').addClass('active');
+                $(this).parent().parent().find('.sc-cIShpX.kQqkBu').addClass('active');
+                $(video_element).each('video',function(index){
+                    if($(this).prop('id')!='video_'+identity)$(this).css('display','none');
+                    else $(this).css('display','block');
+                });
+            });
         },
         error: function (response) {
 
         }
     });
 }
+
+function refreshToken(identity) {
+    console.log('Token about to expire');
+    var form_data = new FormData();
+    form_data.append('room_id',$('#room_id').val());
+    $.ajax({
+        url: '/updateToken',
+        headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: form_data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        dataType: "text",
+        success: function (response) {
+            $('#accessToken').val(response);
+        },
+        error: function (response) {
+
+        }
+    });
+  }
+// Helper function to print info messages to the chat window
+function print(infoMessage, asHtml) {
+    var $msg = $('<div class="info">');
+    if (asHtml) {
+        $msg.html(infoMessage);
+    } else {
+        $msg.text(infoMessage);
+    }
+    $chatWindow.append($msg);
+}
+  // Helper function to print chat message to the chat window
+  function printMessage(fromUser, message) {
+    var $user = $('<span class="username">').text(fromUser + ':');
+    if (fromUser === username) {
+      $user.addClass('me');
+    }
+    var $message = $('<span class="message">').text(message);
+    var $container = $('<div class="message-container">');
+    $container.append($user).append($message);
+    $chatWindow.append($container);
+    $chatWindow.scrollTop($chatWindow[0].scrollHeight);
+  }
+  function createOrJoinGeneralChannel() {
+    print('Attempting to join "'+$('#roomName').val()+'" chat channel...');
+    chatClient.getChannelByUniqueName($('#roomName').val())
+    .then(function(channel) {
+      generalChannel = channel;
+      console.log('Found '+$('#roomName').val()+' channel:');
+      console.log(generalChannel);
+      setupChannel();
+    }).catch(function() {
+      // If it doesn't exist, let's create it
+      console.log('Creating '+$('#roomName').val()+' channel');
+      chatClient.createChannel({
+        uniqueName: $('#roomName').val(),
+        friendlyName: $('#roomName').val()+' Chat Channel'
+      }).then(function(channel) {
+        console.log('Created '+$('#roomName').val()+' channel:');
+        console.log(channel);
+        generalChannel = channel;
+        setupChannel();
+      }).catch(function(channel) {
+        console.log('Channel could not be created:');
+        console.log(channel);
+      });
+    });
+  }
+  // Set up channel after it has been found
+  function setupChannel() {
+    // Join the general channel
+    generalChannel.join().then(function(channel) {
+      print('Joined channel as '
+      + '<span class="me">' + username + '</span>.', true);
+    });
+
+    // Listen for new messages sent to the channel
+    generalChannel.on('messageAdded', function(message) {
+      printMessage(message.author, message.body);
+    });
+  }

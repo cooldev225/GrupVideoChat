@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Twilio\Rest\Client;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
+use Twilio\Jwt\Grants\SyncGrant;
+use Twilio\Jwt\Grants\ChatGrant;
 
 class HomeController extends Controller
 {
@@ -19,6 +21,7 @@ class HomeController extends Controller
     protected $token;
     protected $key;
     protected $secret;
+    protected $service;
     /**
      * Create a new controller instance.
      *
@@ -31,6 +34,7 @@ class HomeController extends Controller
         $this->token = config('services.twilio.token');
         $this->key = config('services.twilio.key');
         $this->secret = config('services.twilio.secret');
+        $this->service = config('services.twilio.service');
     }
 
     /**
@@ -83,6 +87,18 @@ class HomeController extends Controller
     {
         $room_id=$request->route('room_id');
         $room=Room::find($room_id);
+        return view('frontend.room', [ 
+            'room_id'=>$room_id, 
+            'roomName'=>$room->name, 
+            'sel_user'=>Auth::id(),
+            'sel_avatar'=>Auth::user()->avatar,
+            'accessToken'=>$this->updateToken($request)
+        ]);
+    }
+    public function updateToken(Request $request)
+    {
+        $room_id=$request->route('room_id');
+        $room=Room::find($room_id);
         $client = new Client($this->sid, $this->token);
         $exists = $client->video->rooms->read([ 'uniqueName' => $room->name]);
         if(empty($exists)){
@@ -103,19 +119,13 @@ class HomeController extends Controller
         $videoGrant = new VideoGrant();
         $videoGrant->setRoom($room->name);
         $token->addGrant($videoGrant);
+
+        $chatGrant = new ChatGrant();
+        $chatGrant->setServiceSid($this->service);
+        $token->addGrant($chatGrant);
         
         //return view('frontend.room', [ 'accessToken' => $token->toJWT(), 'roomName' => $room->name , 'room_id'=>$room_id]);
-        return view('frontend.room', [ 
-            'accessToken' => $token->toJWT(),
-            'roomName' => $room->name , 
-            'room_id'=>$room_id, 
-            'sid'=>$this->sid, 
-            'token'=>$this->token, 
-            'key'=>$this->key, 
-            'secret'=>$this->secret,
-            'sel_user'=>Auth::id(),
-            'sel_avatar'=>Auth::user()->avatar,
-        ]);
+        return $token->toJWT();
     }
 
     public function addCharge(Request $request){
@@ -205,6 +215,50 @@ class HomeController extends Controller
         return [
             'title' => 'required',
             'notification_message' => 'required'
+        ];
+    }
+    public function messagePrevWebhook(Request $request){
+        $str0=$request->getContent();
+        $str1="";
+        foreach ($request->all() as $key => $value) {
+            $str1.= "{".$key."=>".$value."},";
+        }
+        $row=new Webhook;
+        $row->identifier=">>>";
+        $row->title=">>>".$str0;
+        $row->notification_message=">>>".$str1;
+        $row->save();
+        $this->validate($request, $this->rules());
+
+        $webhook = Webhook::create($request->only(['title', 'notification_message']));
+
+        $url = config('app.url') . "/webhook/{$webhook->identifier}";
+
+        $result = [
+            'message' => "Webhook has been created successfully",
+            'data' => "Webhook URL is {$url}"
+        ];
+    }
+    public function messageWebhook(Request $request){
+        $str0=$request->getContent();
+        $str1="";
+        foreach ($request->all() as $key => $value) {
+            $str1.= "{".$key."=>".$value."},";
+        }
+        $row=new Webhook;
+        $row->identifier=">>>";
+        $row->title=">>>".$str0;
+        $row->notification_message=">>>".$str1;
+        $row->save();
+        $this->validate($request, $this->rules());
+
+        $webhook = Webhook::create($request->only(['title', 'notification_message']));
+
+        $url = config('app.url') . "/webhook/{$webhook->identifier}";
+
+        $result = [
+            'message' => "Webhook has been created successfully",
+            'data' => "Webhook URL is {$url}"
         ];
     }
 }

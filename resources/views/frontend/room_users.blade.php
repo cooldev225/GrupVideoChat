@@ -5,7 +5,7 @@
             <div class="ant-row-flex gutter4" style="margin-left: -2px; margin-right: -2px; height: 22px;"></div>
         </div>
         <div class="{{$sel_user==$user['id']?'active ':''}}sc-cIShpX kQqkBu" max="96" min="60" width="339.33">
-            <button typeof="link" type="button" class="ant-btn overlay" style="border: none; border-radius: 0px; background: transparent;">
+            <button id="avatar_{{$user['username']}}" typeof="link" type="button" class="avatar-btn ant-btn overlay" style="border: none; border-radius: 0px; background: transparent;">
                 <div class="blind">Select {{$user['firstName']}}</div>
             </button>
             <div class="avatar">

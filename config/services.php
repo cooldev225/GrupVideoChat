@@ -34,7 +34,8 @@ return [
         'sid' => env('TWILIO_ACCOUNT_SID'),
         'token' => env('TWILIO_ACCOUNT_TOKEN'),
         'key' => env('TWILIO_API_KEY'),
-        'secret' => env('TWILIO_API_SECRET')
+        'secret' => env('TWILIO_API_SECRET'),
+        'service' => env('TWILIO_SERVICE_SID')
     ],
 
 ];

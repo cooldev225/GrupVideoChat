@@ -3,9 +3,10 @@
 <link href="/frontend/css/room.css" rel="stylesheet">
 @section('content')
 <div class="params" style="display:none;">
-    <input type="hidden" id="accessToken" value="{{$accessToken}}"/>
     <input type="hidden" id="room_id" value="{{$room_id}}"/>
     <input type="hidden" id="roomName" value="{{$roomName}}"/>
+    <input type="hidden" id="accessToken" value="{{$accessToken}}"/>
+    <input type="hidden" value="{{$sel_user}}" id="sel_user"/>
 </div>
 <div id="root">
     <div class="sc-kfGgVZ cNvvco">
@@ -94,7 +95,7 @@
                                                 <div class="text-upload">Drop your images here to upload</div>
                                                 <div class="ant-mentions text-input" style="display:flex;">
                                                     <grammarly-extension data-grammarly-shadow-root="true" style="position: absolute; top: -1px; left: -1px; pointer-events: none;" class="cGcvT"></grammarly-extension>
-                                                    <textarea rows="3" maxlength="1000" placeholder="Enter chat message or link here.<br>Type @ to mention people." spellcheck="false"></textarea>
+                                                    <textarea id="msg" rows="3" maxlength="1000" placeholder="Enter chat message or link here.<br>Type @ to mention people." spellcheck="false"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -110,7 +111,7 @@
         </div>
     </div>
 </div>
-<input type="hidden" value="{{$sel_user}}" id="sel_user"/>
 <script src="//media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
+<script src="https://media.twiliocdn.com/sdk/js/chat/releases/4.0.0/twilio-chat.min.js"></script>
 <script src="/frontend/js/room.js"></script>
 @endsection
