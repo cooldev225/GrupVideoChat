@@ -91,6 +91,7 @@ class HomeController extends Controller
             'room_id'=>$room_id, 
             'roomName'=>$room->name, 
             'sel_user'=>Auth::id(),
+            'me_username'=>Auth::user()->username,
             'sel_avatar'=>Auth::user()->avatar,
             'accessToken'=>$this->updateToken($request)
         ]);

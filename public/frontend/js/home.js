@@ -16,9 +16,14 @@ jQuery(document).ready(function() {
             //alert('Content removed! Current content:' + '\n\n' + this.innerHTML);
         }    
     });
+    window.onbeforeunload = function(e){
+        gapi.auth2.getAuthInstance().signOut();
+    };
 });
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
+    //var idToken=profile.id_token;
+    //googleUser.disconnect();
     var form_data = new FormData();
     form_data.append('first_name',profile.getName());
     form_data.append('username',profile.getId());

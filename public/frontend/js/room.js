@@ -9,7 +9,7 @@ var chatClient;
 var generalChannel;
 // The server will assign the client a random username - store that value
 // here
-var username;
+var username=$('#me_username').val();
 jQuery(document).ready(function() {
     video_element=document.getElementById('media_video');
     $('#close_message_btn').on('click',function(){
@@ -67,7 +67,6 @@ jQuery(document).ready(function() {
         chatClient.on('tokenExpired', function() {
           refreshToken(username);
         });
-        console.log(generalChannel);
     }).catch(error => {
         console.error(error);
         print('There was an error creating the chat client:<br/>' + error, username, new Date());
@@ -154,7 +153,6 @@ function trackAdded(div, track, identity) {
    var obj=track.attach();
    //obj=obj.replace('<audio ','<audio id="audio_'+identity+'" ');
    //obj=obj.replace('<video ','<video id="audio_'+identity+'" ');
-   console.log(obj);
    div.appendChild(obj);
    //div.each('audio',function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
    //div.each('video',function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
@@ -350,12 +348,19 @@ function formatDate(date) {
   function setupChannel() {
     // Join the general channel
     generalChannel.join().then(function(channel) {
-      print('Joined channel as <span class="me">' + username + '</span>.', username, date());
+      print('Joined channel as <span class="me">' + username + '</span>.', username, new Date());
+    }).catch(function() {
+        print('already joined ' + username , username, new Date());
     });
 
     // Listen for new messages sent to the channel
     generalChannel.on('messageAdded', function(message) {
-      //printMessage(message.author, message.body);
-      print(message.body,message.author,message.dateCreated);
-    });
+        //printMessage(message.author, message.body);
+        print(message.body,message.author,message.dateCreated);
+      });
+    // Listen for new messages sent to the channel
+    generalChannel.on('memberLeft', function(data) {
+        console(data);
+        //print(message.body,message.author,message.dateCreated);
+      });
   }

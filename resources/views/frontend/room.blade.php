@@ -7,6 +7,7 @@
     <input type="hidden" id="roomName" value="{{$roomName}}"/>
     <input type="hidden" id="accessToken" value="{{$accessToken}}"/>
     <input type="hidden" value="{{$sel_user}}" id="sel_user"/>
+    <input type="hidden" value="{{$me_username}}" id="me_username"/>
 </div>
 <div id="root">
     <div class="sc-kfGgVZ cNvvco">
