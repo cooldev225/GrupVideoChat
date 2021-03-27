@@ -151,14 +151,10 @@ function participantDisconnected(participant) {
 
 function trackAdded(div, track, identity) {
    var obj=track.attach();
-   //obj=obj.replace('<audio ','<audio id="audio_'+identity+'" ');
-   //obj=obj.replace('<video ','<video id="audio_'+identity+'" ');
    div.appendChild(obj);
-   //div.each('audio',function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
-   //div.each('video',function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
-   //$(obj).find('video').prop('id','video_'+identity);
-   //$(obj).find('audio').prop('id','audio_'+identity);   
-   
+   $('#media_video audio').each(function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
+   $('#media_video video').each(function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
+   return;
    var video = div.getElementsByTagName("video")[0];
    if (video) {
        video.setAttribute("id", "video_"+identity);
@@ -245,7 +241,7 @@ function loadRoomState(){
                 $('.sc-cIShpX.kQqkBu').removeClass('active');
                 $(this).parent().parent().find('.c-ktHwxA.btyRFv').addClass('active');
                 $(this).parent().parent().find('.sc-cIShpX.kQqkBu').addClass('active');
-                $('#media_video').each('video',function(index){
+                $('#media_video video').each(function(index){
                     if($(this).prop('id')!='video_'+identity)$(this).css('display','none');
                     else $(this).css('display','block');
                 });
@@ -325,7 +321,7 @@ function formatDate(date) {
     .then(function(channel) {
       generalChannel = channel;
       console.log('Found '+$('#roomName').val()+' channel:');
-      console.log(generalChannel);
+      //console.log(generalChannel);
       setupChannel();
     }).catch(function() {
       // If it doesn't exist, let's create it

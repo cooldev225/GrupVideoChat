@@ -16,10 +16,11 @@ jQuery(document).ready(function() {
             //alert('Content removed! Current content:' + '\n\n' + this.innerHTML);
         }    
     });
-    window.onbeforeunload = function(e){
-        gapi.auth2.getAuthInstance().signOut();
-    };
 });
+function logout(){
+    gapi.auth2.getAuthInstance().signOut();
+    location.href='logout';
+}
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     //var idToken=profile.id_token;
