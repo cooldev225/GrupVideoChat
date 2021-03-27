@@ -35,13 +35,14 @@ jQuery(document).ready(function() {
             //alert(room.localParticipant.sid+' is lical user');
             $('#media_video img').remove();
             sel_identity=room.localParticipant.identity;
+            username=sel_identity;
             participantConnected(room.localParticipant);
         }
 
         room.on('participantConnected', function(participant) {
             console.log("Joining: '" +  participant.identity +  "'");
             participantConnected(participant);
-            if(sel_identity!=participant.identity)$(video_element).find('#video_'+participant.identity).css('display','none');
+            //if(sel_identity!=participant.identity)$(video_element).find('#video_'+participant.identity).css('display','none');
         });
 
         room.on('participantDisconnected', function(participant) {
@@ -66,17 +67,25 @@ jQuery(document).ready(function() {
         chatClient.on('tokenExpired', function() {
           refreshToken(username);
         });
-  
-        // Alert the user they have been assigned a random username
-        username = $('#sel_user').val();
-        print('You have been assigned a random username of: '
-        + '<span class="me">' + username + '</span>', true);
-  
+        console.log(generalChannel);
     }).catch(error => {
         console.error(error);
-        print('There was an error creating the chat client:<br/>' + error, true);
-        print('Please check your .env file.', false);
+        print('There was an error creating the chat client:<br/>' + error, username, new Date());
     });
+    
+    // Send a new message to the general channel
+      var $input = $('#chat-input');
+      $input.on('keyup', function(e) {
+    
+        if (e.keyCode == 13&&$input.val()!='') {
+          if (generalChannel === undefined) {
+            print('The Chat Service is not configured. Please check your .env file.', username, new Date());
+            return;
+          }
+          generalChannel.sendMessage($input.val())
+          $input.val('');
+        }
+      });
 });
 function closeMessageNav(){
     $('.sc-hwwEjo.dtxMPz .ant-tabs').prop('class','ant-tabs ant-tabs-right slide-menu-tabs collapsed ant-tabs-vertical ant-tabs-line');
@@ -147,15 +156,22 @@ function trackAdded(div, track, identity) {
    //obj=obj.replace('<video ','<video id="audio_'+identity+'" ');
    console.log(obj);
    div.appendChild(obj);
-   $(div).each('audio',function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
-   $(div).each('video',function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
+   //div.each('audio',function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
+   //div.each('video',function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
    //$(obj).find('video').prop('id','video_'+identity);
    //$(obj).find('audio').prop('id','audio_'+identity);   
    
-   //var video = div.getElementsByTagName("video")[0];
-   //if (video) {
-   //    video.setAttribute("style", "max-width:300px;");
-   //}
+   var video = div.getElementsByTagName("video")[0];
+   if (video) {
+       video.setAttribute("id", "video_"+identity);
+       if(sel_identity==identity)video.setAttribute("style", "display:block;");
+       else video.setAttribute("style", "display:none;");
+   }
+
+   var audio = div.getElementsByTagName("audio")[0];
+   if (audio) {
+       audio.setAttribute("id", "audio_"+identity);
+   }
 }
 
 function trackRemoved(track) {//alert('removed track');
@@ -231,7 +247,7 @@ function loadRoomState(){
                 $('.sc-cIShpX.kQqkBu').removeClass('active');
                 $(this).parent().parent().find('.c-ktHwxA.btyRFv').addClass('active');
                 $(this).parent().parent().find('.sc-cIShpX.kQqkBu').addClass('active');
-                $(video_element).each('video',function(index){
+                $('#media_video').each('video',function(index){
                     if($(this).prop('id')!='video_'+identity)$(this).css('display','none');
                     else $(this).css('display','block');
                 });
@@ -267,15 +283,33 @@ function refreshToken(identity) {
     });
   }
 // Helper function to print info messages to the chat window
-function print(infoMessage, asHtml) {
-    var $msg = $('<div class="info">');
-    if (asHtml) {
-        $msg.html(infoMessage);
-    } else {
-        $msg.text(infoMessage);
-    }
-    $chatWindow.append($msg);
+function print(msg, identity, time) {
+    var avatar=$('#avatar_'+identity).parent().find('div.avatar span img').prop('src');
+    var name=$('#avatar_'+identity).parent().find('div.name div').html();
+    time=formatDate(time);
+    var html='<div class="message shift-mode  "><div class="user"><div class="avatar"><span class="ant-avatar ant-avatar-square ant-avatar-image"><img src="'+avatar+'"></span></div><div class="name primary">'+name+'</div><div class="time">'+time+'</div></div><div class="text"><div class="html"><p>'+msg+'</p></div><div class="shift shift-visible"><div class="ant-row-flex ant-row-flex-end actions" style="margin-left: -4px; margin-right: -4px;"><div class="ant-col" style="padding-left: 4px; padding-right: 4px; flex: 1 1 0%;"><div class="ant-row-flex" style="margin-left: -4px; margin-right: -4px;"></div></div><div class="ant-col" style="padding-left: 4px; padding-right: 4px;"><button type="button" class="ant-btn ant-btn-link"><span>Quote</span></button></div></div></div></div></div>';
+    $chatWindow.append(html);
 }
+function formatDate(date) {
+    var d = new Date(date);
+    var hh = d.getHours();
+    var m = d.getMinutes();
+    var s = d.getSeconds();
+    var dd = "AM";
+    var h = hh;
+    if (h >= 12) {
+      h = hh - 12;
+      dd = "PM";
+    }
+    if (h == 0) {
+      h = 12;
+    }
+    m = m < 10 ? "0" + m : m;
+  
+    s = s < 10 ? "0" + s : s;
+  
+    return h+':'+m+' '+dd;
+  }
   // Helper function to print chat message to the chat window
   function printMessage(fromUser, message) {
     var $user = $('<span class="username">').text(fromUser + ':');
@@ -289,7 +323,6 @@ function print(infoMessage, asHtml) {
     $chatWindow.scrollTop($chatWindow[0].scrollHeight);
   }
   function createOrJoinGeneralChannel() {
-    print('Attempting to join "'+$('#roomName').val()+'" chat channel...');
     chatClient.getChannelByUniqueName($('#roomName').val())
     .then(function(channel) {
       generalChannel = channel;
@@ -317,12 +350,12 @@ function print(infoMessage, asHtml) {
   function setupChannel() {
     // Join the general channel
     generalChannel.join().then(function(channel) {
-      print('Joined channel as '
-      + '<span class="me">' + username + '</span>.', true);
+      print('Joined channel as <span class="me">' + username + '</span>.', username, date());
     });
 
     // Listen for new messages sent to the channel
     generalChannel.on('messageAdded', function(message) {
-      printMessage(message.author, message.body);
+      //printMessage(message.author, message.body);
+      print(message.body,message.author,message.dateCreated);
     });
   }

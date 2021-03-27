@@ -71,13 +71,6 @@
                                     <div tabindex="0" role="presentation" style="width: 0px; height: 0px; overflow: hidden; position: absolute;"></div>
                                     <div class="sc-kTUwUJ QfEOY">
                                         <div class="sc-cmTdod ktfjmN">
-                                            <div class="message  no-padding ">
-                                                <div class="system">
-                                                    <div class="ant-row-flex ant-row-flex-space-between" style="margin-left: -4px; margin-right: -4px;">
-                                                
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="extra sc-jwKygS kzrDCd"></div>
                                         </div> 
                                         <div class="extra sc-jwKygS kzrDCd"></div>
@@ -95,7 +88,7 @@
                                                 <div class="text-upload">Drop your images here to upload</div>
                                                 <div class="ant-mentions text-input" style="display:flex;">
                                                     <grammarly-extension data-grammarly-shadow-root="true" style="position: absolute; top: -1px; left: -1px; pointer-events: none;" class="cGcvT"></grammarly-extension>
-                                                    <textarea id="msg" rows="3" maxlength="1000" placeholder="Enter chat message or link here.<br>Type @ to mention people." spellcheck="false"></textarea>
+                                                    <textarea id="chat-input" rows="3" maxlength="1000" placeholder="Enter chat message or link here.<br>Type @ to mention people." spellcheck="false"></textarea>
                                                 </div>
                                             </div>
                                         </div>

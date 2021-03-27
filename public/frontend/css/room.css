@@ -700,3 +700,84 @@ button, input, optgroup, select, textarea {
 [tabindex="-1"]:focus {
     outline: none!important;
 }
+
+.ktfjmN .message {
+    margin: 0px;
+    padding: 10px;
+    position: relative;
+}
+.ktfjmN .message.shift-mode {
+    cursor: pointer;
+}
+.ktfjmN .avatar {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+}
+.ktfjmN .name {
+    margin-right: 55px;
+    margin-left: 40px;
+}
+.ktfjmN .primary {
+    color: rgb(47, 148, 233);
+}
+.ktfjmN .time {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    font-size: 10px;
+    opacity: 0.5;
+}
+.ktfjmN .text, .ktfjmN .sticker {
+    margin-left: 40px;
+}
+.ktfjmN .html {
+    overflow: hidden;
+    line-height: normal;
+    min-height: 18px;
+}
+.ktfjmN .html h1, .ktfjmN .html h2, .ktfjmN .html h3, .ktfjmN .html h4, .ktfjmN .html h5, .ktfjmN .html h6, .ktfjmN .html p, .ktfjmN .html blockquote {
+    margin: 0px;
+    padding: 0px;
+}
+.ktfjmN .html p {
+    margin-bottom: 10px;
+}
+.ktfjmN .html > :last-child {
+    margin-bottom: 0px;
+}
+.ktfjmN .message .shift {
+    display: none;
+    margin-top: 4px;
+}
+.ktfjmN .message .shift-visible {
+    display: block;
+    visibility: hidden;
+}
+.ktfjmN .text .actions, .ktfjmN .sticker .actions, .ktfjmN .system .actions {
+    padding: 0px;
+}
+.ktfjmN .text .actions button, .ktfjmN .sticker .actions button, .ktfjmN .system .actions button {
+    font-size: 12px;
+    padding: 2px;
+    height: auto;
+    line-height: 1;
+}
+.ant-btn>i, .ant-btn>span {
+    display: inline-block;
+    transition: margin-left .3s cubic-bezier(.645,.045,.355,1);
+    pointer-events: none;
+}
+.ktfjmN .message.shift-mode:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+}
+.ktfjmN .message.shift-mode:hover .shift {
+    display: block;
+}
+.ktfjmN .message.shift-mode:hover .shift-visible {
+    visibility: visible;
+}
+.ktfjmN .message.shift-mode .shift-visible ,.ktfjmN .message.shift-mode:hover .shift-visible {
+    display: none;
+}

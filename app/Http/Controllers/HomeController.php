@@ -205,7 +205,7 @@ class HomeController extends Controller
 
         $url = config('app.url') . "/webhook/{$webhook->identifier}";
 
-        $result = [
+        return $result = [
             'message' => "Webhook has been created successfully",
             'data' => "Webhook URL is {$url}"
         ];
@@ -234,7 +234,7 @@ class HomeController extends Controller
 
         $url = config('app.url') . "/webhook/{$webhook->identifier}";
 
-        $result = [
+        return $result = [
             'message' => "Webhook has been created successfully",
             'data' => "Webhook URL is {$url}"
         ];
@@ -256,7 +256,7 @@ class HomeController extends Controller
 
         $url = config('app.url') . "/webhook/{$webhook->identifier}";
 
-        $result = [
+        return $result = [
             'message' => "Webhook has been created successfully",
             'data' => "Webhook URL is {$url}"
         ];
