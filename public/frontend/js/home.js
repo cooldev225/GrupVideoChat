@@ -17,9 +17,17 @@ jQuery(document).ready(function() {
         }    
     });
 });
+function onLoad() {
+    gapi.load('auth2', function() {
+      gapi.auth2.init();
+    });
+  }
 function logout(){
-    gapi.auth2.getAuthInstance().signOut();
-    location.href='logout';
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+      location.href='logout';
+    });    
 }
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();

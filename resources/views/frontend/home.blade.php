@@ -172,6 +172,6 @@
         
     </div>
 </div>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 <script src="frontend/js/home.js"></script>
 @endsection

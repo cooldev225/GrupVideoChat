@@ -15,8 +15,8 @@ jQuery(document).ready(function() {
     $('#close_message_btn').on('click',function(){
         closeMessageNav();
     });
+    addCharge(username);
     loadRoomState();
-    addCharge();
     
     Twilio.Video.createLocalTracks({
         audio: true,
@@ -71,7 +71,6 @@ jQuery(document).ready(function() {
         console.error(error);
         print('There was an error creating the chat client:<br/>' + error, username, new Date());
     });
-    
     // Send a new message to the general channel
       var $input = $('#chat-input');
       $input.on('keyup', function(e) {
@@ -137,23 +136,30 @@ function participantConnected(participant) {
         trackAdded(video_element, track, participant.identity);
    });
    participant.on('trackRemoved', trackRemoved);
-   //document.getElementById('media-div').appendChild(div);   
+   
+   addCharge(participant.identity);
    loadRoomState();
 }
 
 function participantDisconnected(participant) {
    console.log('Participant "%s" disconnected', participant.identity);
    participant.tracks.forEach(trackRemoved);
-   document.getElementById(participant.sid).remove();
+   
+   $("#audio_"+participant.identity).remove();
+   $("#video_"+participant.identity).remove();
+   delCharge(participant.identity);
    loadRoomState();
-   delCharge();
 }
 
 function trackAdded(div, track, identity) {
    var obj=track.attach();
    div.appendChild(obj);
-   $('#media_video audio').each(function(index){alert($(this).prop('id'));if($(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);});
-   $('#media_video video').each(function(index){if($(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
+   $('#media_video audio').each(function(index){
+       if($(this).prop('id')==''||$(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);
+       if(sel_identity==identity)$(this).css('display','block');
+       else $(this).css('display','none');
+    });
+   $('#media_video video').each(function(index){if($(this).prop('id')==''||$(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
    return;
    var video = div.getElementsByTagName("video")[0];
    if (video) {
@@ -168,13 +174,14 @@ function trackAdded(div, track, identity) {
    }
 }
 
-function trackRemoved(track) {//alert('removed track');
+function trackRemoved(track) {
    track.detach().forEach( function(element) { element.remove(); });
 }
 
-function addCharge(){
+function addCharge(identity){
     var form_data = new FormData();
     form_data.append('room_id',$('#room_id').val());
+    form_data.append('username',identity);
     $.ajax({
         url: '/addCharge',
         headers: {
@@ -194,9 +201,10 @@ function addCharge(){
         }
     });
 }
-function delCharge(){
+function delCharge(identity){
     var form_data = new FormData();
     form_data.append('room_id',$('#room_id').val());
+    form_data.append('username',identity);
     $.ajax({
         url: '/delCharge',
         headers: {
@@ -321,10 +329,8 @@ function formatDate(date) {
     .then(function(channel) {
       generalChannel = channel;
       console.log('Found '+$('#roomName').val()+' channel:');
-      //console.log(generalChannel);
       setupChannel();
     }).catch(function() {
-      // If it doesn't exist, let's create it
       console.log('Creating '+$('#roomName').val()+' channel');
       chatClient.createChannel({
         uniqueName: $('#roomName').val(),
@@ -345,8 +351,6 @@ function formatDate(date) {
     // Join the general channel
     generalChannel.join().then(function(channel) {
       print('Joined channel as <span class="me">' + username + '</span>.', username, new Date());
-    }).catch(function() {
-        print('already joined ' + username , username, new Date());
     });
 
     // Listen for new messages sent to the channel

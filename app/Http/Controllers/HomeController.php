@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Room;
 use App\Models\RoomCharge;
 use App\Models\Webhook;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 use Twilio\Rest\Client;
@@ -131,7 +132,11 @@ class HomeController extends Controller
 
     public function addCharge(Request $request){
         $room_id=$request->input('room_id');
-        $charge=RoomCharge::select()->where('user_id',Auth::id());//->where('room_id',$room_id)
+        $username=$request->input('username');
+        $user=User::select()->where('username','=',$username);
+        if($user->count()==0)return 'there is no user';
+        $userid=$user->get()[0]['id'];
+        $charge=RoomCharge::select()->where('user_id',$userid);//->where('room_id',$room_id)
         if($charge->count())$charge=$charge->get()[0];                
         else{
             $charge=new RoomCharge;
@@ -144,7 +149,11 @@ class HomeController extends Controller
     }
     public function delCharge(Request $request){
         $room_id=$request->input('room_id');
-        $charge=RoomCharge::select()->where('user_id',Auth::id())->delete();//->where('room_id',$room_id)
+        $username=$request->input('username');
+        $user=User::select()->where('username','=',$username);
+        if($user->count()==0)return 'there is no user';
+        $userid=$user->get()[0]['id'];
+        $charge=RoomCharge::select()->where('user_id',$userid)->delete();//->where('room_id',$room_id)
     }
 
     public function addRoom(Request $request){
@@ -196,7 +205,7 @@ class HomeController extends Controller
             $str1.= "{".$key."=>".$value."},";
         }
         $row=new Webhook;
-        $row->identifier=">>>";
+        $row->identifier="videoWebhook>>>";
         $row->title=">>>".$str0;
         $row->notification_message=">>>".$str1;
         $row->save();
@@ -225,7 +234,7 @@ class HomeController extends Controller
             $str1.= "{".$key."=>".$value."},";
         }
         $row=new Webhook;
-        $row->identifier=">>>";
+        $row->identifier="messagePrevWebhook>>>";
         $row->title=">>>".$str0;
         $row->notification_message=">>>".$str1;
         $row->save();
@@ -247,7 +256,7 @@ class HomeController extends Controller
             $str1.= "{".$key."=>".$value."},";
         }
         $row=new Webhook;
-        $row->identifier=">>>";
+        $row->identifier="messageWebhook>>>";
         $row->title=">>>".$str0;
         $row->notification_message=">>>".$str1;
         $row->save();
