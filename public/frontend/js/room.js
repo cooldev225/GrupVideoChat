@@ -154,10 +154,13 @@ function trackAdded(div, track, identity) {
    div.appendChild(obj);
    $('#media_video audio').each(function(index){
        if($(this).prop('id')==''||$(this).prop('id')==undefined)$(this).prop('id','audio_'+identity);
+       
+    });
+   $('#media_video video').each(function(index){
+       if($(this).prop('id')==''||$(this).prop('id')==undefined)$(this).prop('id','video_'+identity);
        if(sel_identity==identity)$(this).css('display','block');
        else $(this).css('display','none');
     });
-   $('#media_video video').each(function(index){if($(this).prop('id')==''||$(this).prop('id')==undefined)$(this).prop('id','video_'+identity);});
    return;
    var video = div.getElementsByTagName("video")[0];
    if (video) {
