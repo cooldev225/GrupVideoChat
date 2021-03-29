@@ -16,7 +16,7 @@ jQuery(document).ready(function() {
         closeMessageNav();
     });
     addCharge(username);
-    loadRoomState();
+    
     
     Twilio.Video.createLocalTracks({
         audio: true,
@@ -138,7 +138,6 @@ function participantConnected(participant) {
    participant.on('trackRemoved', trackRemoved);
    
    addCharge(participant.identity);
-   loadRoomState();
 }
 
 function participantDisconnected(participant) {
@@ -148,7 +147,6 @@ function participantDisconnected(participant) {
    $("#audio_"+participant.identity).remove();
    $("#video_"+participant.identity).remove();
    delCharge(participant.identity);
-   loadRoomState();
 }
 
 function trackAdded(div, track, identity) {
@@ -194,7 +192,7 @@ function addCharge(identity){
         type: 'POST',
         dataType: "text",
         success: function (response) {
-            
+            loadRoomState();
         },
         error: function (response) {
 
@@ -217,7 +215,7 @@ function delCharge(identity){
         type: 'POST',
         dataType: "text",
         success: function (response) {
-            
+            loadRoomState();
         },
         error: function (response) {
 
