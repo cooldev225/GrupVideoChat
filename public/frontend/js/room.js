@@ -9,6 +9,7 @@ var chatClient;
 var generalChannel;
 // The server will assign the client a random username - store that value
 // here
+var gRoom=null;
 var username=$('#me_username').val();
 jQuery(document).ready(function() {
     video_element=document.getElementById('media_video');
@@ -16,7 +17,7 @@ jQuery(document).ready(function() {
         closeMessageNav();
     });
     addCharge(username);
-    
+    //hook_room();
     
     Twilio.Video.createLocalTracks({
         audio: true,
@@ -28,11 +29,12 @@ jQuery(document).ready(function() {
             video: { width: 300 }
         });
     }).then(function(room) {
+        gRoom=room;
         console.log('Successfully joined a Room: ', room.name);
         room.participants.forEach(participantConnected);
         var previewContainer = document.getElementById(room.localParticipant.sid);
         if (!previewContainer || !previewContainer.querySelector('video')) {
-            //alert(room.localParticipant.sid+' is lical user');
+            console.log(room.localParticipant.sid+' is lical user');
             $('#media_video img').remove();
             sel_identity=room.localParticipant.identity;
             username=sel_identity;
@@ -48,6 +50,49 @@ jQuery(document).ready(function() {
         room.on('participantDisconnected', function(participant) {
             console.log("Disconnected: '"  + participant.identity +  "'");
             participantDisconnected(participant);
+        });
+
+        $("#btn_mic_turnonoff").on('click',function(){
+          var o=document.getElementById("audio_"+sel_identity);
+          if($("#btn_mic_turnonoff").hasClass("turn-off")){
+            $("#btn_mic_turnonoff").css('opacity',0.4);
+            $("#btn_mic_turnonoff").removeClass("turn-off");
+            room.localParticipant.audioTracks.forEach(publication => {
+              publication.track.disable();
+            });
+            o.muted=true;      
+          }else{
+            $("#btn_mic_turnonoff").css('opacity',1);
+            $("#btn_mic_turnonoff").addClass("turn-off");
+            room.localParticipant.audioTracks.forEach(publication => {
+              publication.track.enable();
+            });
+            o.muted=false;      
+          }
+        });
+        $("#btn_camera_turnonoff").on('click',function(){
+          var o=document.getElementById("video_"+sel_identity);
+          if($("#btn_camera_turnonoff").hasClass("turn-off")){
+            $("#btn_camera_turnonoff").css('opacity',0.4);
+            $("#btn_camera_turnonoff").removeClass("turn-off");
+            gRoom.localParticipant.videoTracks.forEach(publication => {
+              publication.track.disable();
+            });
+            o.muted=true;      
+          }else{
+            $("#btn_camera_turnonoff").css('opacity',1);
+            $("#btn_camera_turnonoff").addClass("turn-off");
+            gRoom.localParticipant.videoTracks.forEach(publication => {
+              publication.track.enable();
+            });
+            o.muted=false;      
+          }
+        });
+        $("#btn_hangup").on('click',function(){
+          room.localParticipant.tracks.forEach(function(track) { 
+            track.stop();
+          });
+          window.close();
         });
     });
     // additional functions will be added after this point
@@ -85,6 +130,31 @@ jQuery(document).ready(function() {
         }
       });
 });
+function hook_room(){
+  var form_data = new FormData();
+  form_data.append('room_id',$('#room_id').val());
+  form_data.append('userid',$('#sel_user').val());
+  $.ajax({
+      url: '/hookRoom',
+      headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      data: form_data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      dataType: "text",
+      success: function (response) {
+        setTimeout(function() {
+          hook_room();
+        }, 1000*60*2);
+      },
+      error: function (response) {
+
+      }
+  });
+}
 function closeMessageNav(){
     $('.sc-hwwEjo.dtxMPz .ant-tabs').prop('class','ant-tabs ant-tabs-right slide-menu-tabs collapsed ant-tabs-vertical ant-tabs-line');
     $('.sc-hwwEjo.dtxMPz .ant-tabs .ant-tabs-bar.ant-tabs-top-bar').prop('class','ant-tabs-bar ant-tabs-right-bar');
@@ -123,10 +193,6 @@ function closeMessageNav(){
 }
 function participantConnected(participant) {
    console.log('Participant "%s" connected', participant.identity);
-   //const div = document.createElement('div');
-   //div.id = participant.sid;
-   //div.setAttribute("style", "float: left; margin: 10px;");
-   //div.innerHTML = "<div style='clear:both'>"+participant.identity+"</div>";
 
    participant.tracks.forEach(function(track) {
         trackAdded(video_element, track, participant.identity);
@@ -245,6 +311,7 @@ function loadRoomState(){
             $('#room_users').html(response);
             $('.avatar-btn').on('click',function(){
                 var identity=$(this).prop('id').replace('avatar_','');
+                sel_identity=identity;
                 if($(this).parent().hasClass('active'))return;
                 $('.c-ktHwxA.btyRFv').removeClass('active');
                 $('.sc-cIShpX.kQqkBu').removeClass('active');
@@ -254,6 +321,8 @@ function loadRoomState(){
                     if($(this).prop('id')!='video_'+identity)$(this).css('display','none');
                     else $(this).css('display','block');
                 });
+
+
             });
         },
         error: function (response) {
@@ -364,4 +433,13 @@ function formatDate(date) {
         console(data);
         //print(message.body,message.author,message.dateCreated);
       });
+  }
+  function micTurnOnOff(){
+    
+  }
+  function cameraTurnOnOff(){
+    
+  }
+  function hangup(){
+    
   }

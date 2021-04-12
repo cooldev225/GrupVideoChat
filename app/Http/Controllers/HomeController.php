@@ -8,6 +8,7 @@ use App\Models\Room;
 use App\Models\RoomCharge;
 use App\Models\Webhook;
 use App\Models\User;
+use DB;
 use Illuminate\Support\Facades\Auth;
 
 use Twilio\Rest\Client;
@@ -29,8 +30,7 @@ class HomeController extends Controller
      * @return void
      */
     public function __construct()
-    {
-        
+    {        
         $this->sid = config('services.twilio.sid');
         $this->token = config('services.twilio.token');
         $this->key = config('services.twilio.key');
@@ -49,11 +49,9 @@ class HomeController extends Controller
         try {
             $client = new Client($this->sid, $this->token);
             $allRooms = $client->video->rooms->read([]);
-
             $rooms = array_map(function($room) {
                 return $room->uniqueName;
             }, $allRooms);
-
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
         }
@@ -64,14 +62,22 @@ class HomeController extends Controller
         else     
             return view('frontend.home',[
                 'is_logged_in'=>true,
-                '_rooms'=>$rooms,
+                '_rooms'=>null,//$rooms,
                 'avatar'=>Auth::user()->avatar,
                 'full_name'=>Auth::user()->firstName." ".Auth::user()->lastName,
                 'email'=>Auth::user()->email,
             ]);
     }
     public function getRoomsView(){
+        DB::update("set time_zone = '-03:00';");
+        RoomCharge::select()->whereRaw('TIMESTAMPDIFF(HOUR, TIMESTAMP(updated_at), CURRENT_TIMESTAMP)>3')->delete();
+        $rooms=Room::select()->whereRaw('TIMESTAMPDIFF(HOUR, TIMESTAMP(updated_at), CURRENT_TIMESTAMP)>1')->get();
+        foreach($rooms as $room){
+            if(RoomCharge::select()->where('room_id','=',$room['id'])->count()==0)
+                Room::find($room['id'])->delete();
+        }
         $rooms=Room::select()->orderBy('created_at','desc')->get();
+        $room_charges=array();
         foreach($rooms as $room){
             $room_charges[$room['id']]=RoomCharge::select('users.*')
                     ->leftJoin('users','users.id','=','room_charges.user_id')
@@ -88,6 +94,7 @@ class HomeController extends Controller
     {
         $room_id=$request->route('room_id');
         $room=Room::find($room_id);
+        if($room==null)return redirect('/');
         return view('frontend.room', [ 
             'room_id'=>$room_id, 
             'roomName'=>$room->name, 
@@ -159,15 +166,30 @@ class HomeController extends Controller
     public function addRoom(Request $request){
         $room_size=$request->input('room_size');
         $room_name=$request->input('room_name');
+        $room_lang=$request->input('room_lang');
+        $room_level=$request->input('room_level');
         $room=Room::select()->where('name',$room_name);
         if($room->count())return 'Error! there is exist the topic.';
         $room=new Room;
-        $room->name=$room_name;
+        $room->name=$room_name.date('Y-m-d H:i:s');
         $room->size=$room_size;
+        $room->language=$room_lang;
+        $room->level=$room_level;
         $room->stream='';
         $room->state=0;
         $room->owner=Auth::id();
         $room->created_at=date('Y-m-d H:i:s');
+        $room->updated_at=date('Y-m-d H:i:s');
+        $room->save();
+        return 'success';
+    }
+
+    public function hookRoom(Request $request){
+        $room_id=$request->input('room_id');
+        $userid=$request->input('userid');
+        $room=RoomCharge::select()->where('user_id',$userid)->where('room_id',$room_id);
+        if(!$room->count())return 'Error! there is no the topic.';
+        $room=$room->get()[0];
         $room->updated_at=date('Y-m-d H:i:s');
         $room->save();
         return 'success';

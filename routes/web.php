@@ -40,6 +40,7 @@ Route::group(['middleware' => ['login']], function () {
     Route::post('/addRoom', 'HomeController@addRoom');
     Route::post('/loadRoomState', 'HomeController@loadRoomState');
     Route::post('/updateToken', 'HomeController@updateToken');
+    Route::post('/hookRoom', 'HomeController@hookRoom');
 });
 
 Route::group(['middleware' => ['login']], function () {

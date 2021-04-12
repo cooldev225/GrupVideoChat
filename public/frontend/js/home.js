@@ -99,6 +99,8 @@ function submitGroup(){
     var form_data = new FormData();
     form_data.append('room_size',$('#room_size').val());
     form_data.append('room_name',$('#room_name').val());
+    form_data.append('room_lang',$('#room_lang').val());
+    form_data.append('room_level',$('#room_level').val());
     $.ajax({
         url: '/addRoom',
         headers: {

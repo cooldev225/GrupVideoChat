@@ -1,3 +1,7 @@
+@php
+$lang=explode(",","English,Portuguese,Spanish,Chinese");
+$level=explode(",","Any Level,Beginner,Upper Beginner,Intermediate,Upper Intermediate,Advanced,Upper Advanced,Intermediate,Intermediate");
+@endphp
 @foreach($rooms as $room)
                     <div class="ant-col ant-col-xs-24 ant-col-sm-24 ant-col-md-12 ant-col-lg-12 ant-col-xl-12 ant-col-xxl-12" style="padding-left: 12px; padding-right: 12px;">
                         <div class="ant-list-item" style="min-width: 280px; margin-bottom: 24px;">
@@ -21,14 +25,14 @@
                                                                 <div>
                                                                     <div class="ant-row-flex ant-row-flex-middle" style="margin-left: -4px; margin-right: -4px;">
                                                                         <div class="ant-col" style="padding-left: 4px; padding-right: 4px;">
-                                                                            <div class="sc-fAjcbJ byigni">English</div>
+                                                                            <div class="sc-fAjcbJ byigni">{{$lang[$room['language']]}}</div>
                                                                         </div>
                                                                         <div class="ant-col" style="padding-left: 4px; padding-right: 4px;">
-                                                                            <div class="sc-caSCKo fLXooN">{{$room['name']}}</div>
+                                                                            <div class="sc-caSCKo fLXooN">{{$level[$room['level']]}}</div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="sc-gisBJw fdtTnw">Let's play</div>
+                                                                <div class="sc-gisBJw fdtTnw">{{$room['name']}}</div>
                                                             </span>
                                                         </div>
                                                     </div>

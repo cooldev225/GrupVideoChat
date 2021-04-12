@@ -781,3 +781,18 @@ button, input, optgroup, select, textarea {
 .ktfjmN .message.shift-mode .shift-visible ,.ktfjmN .message.shift-mode:hover .shift-visible {
     display: none;
 }
+.ant-row-flex.gutter4>.ant-col {
+    margin: 2px 0;
+}
+.xHdrs button {
+    padding: 0px;
+    width: 45px;
+    height: 40px;
+}
+.hwtmDq .top{
+text-align: center;
+}
+.hwtmDq .top > div {
+    padding: 20px 20px 10px;
+    display: inline-flex;
+}

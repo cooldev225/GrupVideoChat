@@ -2,6 +2,15 @@
 
 use Illuminate\Support\Str;
 
+date_default_timezone_set('America/Sao_Paulo');
+$now = new DateTime();
+$mins = $now->getOffset() / 60;
+$sgn = ($mins < 0 ? -1 : 1);
+$mins = abs($mins);
+$hrs = floor($mins / 60);
+$mins -= $hrs * 60;
+$offset = sprintf('%+d:%02d', $hrs*$sgn, $mins);
+
 return [
 
     /*
@@ -57,6 +66,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
+            'timezone'=> $offset,
             'modes' => [
                 //'ONLY_FULL_GROUP_BY', // Disable this to allow grouping by one column
                 'STRICT_TRANS_TABLES',

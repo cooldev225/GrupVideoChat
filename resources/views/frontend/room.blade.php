@@ -14,6 +14,38 @@
         <div class="sc-gzOgki lolezo">
             <div class="sc-iyvyFf bvgoZP" style="padding-right: 320px;">
                 <div class="sc-kPVwWT hwtmDq">
+                    <div class="top">
+                        <div>
+                            <div class="ant-row-flex ant-row-flex-space-around ant-row-flex-middle">
+                                <div class="ant-col">
+                                    <div class="sc-jnlKLf xHdrs">
+                                        <div class="ant-row-flex ant-row-flex-center">
+                                            <div class="ant-col">
+                                                <div class="ant-row-flex gutter4" style="margin-left: -2px; margin-right: -2px; flex-wrap: nowrap; padding: 5px 3px; border-radius: 10px; background: rgb(0, 0, 0);">
+                                                    <div class="ant-col" style="padding-left: 2px; padding-right: 2px;">
+                                                        <button type="button" id="btn_mic_turnonoff" class="ant-btn ant-btn-primary ant-btn-lg turn-off" onclick="micTurnOnOff();">
+                                                            <i class="anticon" style="font-size: 20px;">
+                                                                <svg viewBox="0 0 1024 1024" data-icon="line" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M752.850763 578.028574a261.0432 261.0432 0 0 0 8.727033-66.028574h99.913005c0 52.0039-11.107132 101.320591-30.634187 145.95386l-78.005851-79.925286zM361.951368 153.705412c0-84.455153 67.43616-153.554824 149.843915-153.554824 82.433348 0 149.869508 69.099671 149.869508 153.554824v330.910644l-299.713423-307.109647V153.705412z m514.178326 803.961871l-155.346296-159.159575a342.555219 342.555219 0 0 1-159.031613 67.692085V921.479529l99.913006 102.369883H361.951368l99.913005-102.369883v-55.279736C292.67255 841.221542 162.125357 692.1454 162.125357 512H262.038362c0 141.116883 112.043836 255.924706 249.756921 255.924706a243.691505 243.691505 0 0 0 137.559529-42.611464l-73.168873-74.985938a145.109308 145.109308 0 0 1-64.390656 15.22752c-82.407755 0-149.843915-69.099671-149.843915-153.554824v-81.179317L76.851245 138.708224l70.635219-72.375507 799.278449 818.959059-70.635219 72.375507z"></path>
+                                                                </svg>
+                                                            </i>
+                                                            <div class="blind">Turn ON your microphone</div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="ant-col" style="padding-left: 2px; padding-right: 2px;">
+                                                        <button type="button" id="btn_camera_turnonoff" class="ant-btn ant-btn-primary ant-btn-lg turn-off" onclick="cameraTurnOnOff();"><i class="anticon" style="font-size: 20px;"><svg viewBox="0 0 1024 1024" data-icon="line" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1267.6 916.2l-110-85c30.8-2.8 58.4-27.4 58.4-62.2v-514c0-51-58.2-80.8-100.8-51.6L896 354.6v274.4l-64-49.4v-356c0-52.8-42.8-95.6-95.6-95.6H247.8L91 6.8C77-4 57-1.6 46 12.4L6.8 62.8c-10.8 14-8.4 34 5.6 44.8L85.4 164 832 741.2l357 276c14 10.8 34 8.4 45-5.6l39.2-50.6c11-13.8 8.4-34-5.6-44.8zM64 800.4c0 52.8 42.8 95.6 95.6 95.6h576.8c22.4 0 42.8-8 59.2-21L64 309.4v491z"></path></svg></i><div class="blind">Turn ON your camera</div></button>
+                                                    </div>
+                                                    <div class="ant-col" style="padding-left: 2px; padding-right: 2px;">
+                                                        <button type="button" id="btn_hangup" class="ant-btn no-border ant-btn-lg" onclick="hangup();"><i class="anticon" style="color: rgb(245, 34, 45); font-size: 20px;"><svg viewBox="0 0 1024 1024" data-icon="line" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1006.933333 518.826667c-146.773333-139.946667-320.853333-215.04-494.933333-215.04S163.84 378.88 17.066667 518.826667c-10.24 10.24-17.066667 23.893333-17.066667 40.96s6.826667 30.72 17.066667 40.96l102.4 102.4c20.48 20.48 61.44 20.48 81.92 0 30.72-30.72 68.266667-54.613333 105.813333-75.093334 20.48-10.24 34.133333-30.72 34.133333-54.613333v-105.813333c64.853333-20.48 119.466667-27.306667 170.666667-27.306667 54.613333 0 109.226667 10.24 170.666667 27.306667v105.813333c0 23.893333 13.653333 44.373333 34.133333 54.613333 40.96 20.48 75.093333 44.373333 105.813333 75.093334 10.24 10.24 27.306667 17.066667 40.96 17.066666 17.066667 0 30.72-6.826667 40.96-17.066666l102.4-102.4c10.24-10.24 17.066667-27.306667 17.066667-40.96 0-17.066667-6.826667-30.72-17.066667-40.96z"></path></svg></i><div class="blind">Hangup this call</div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="middle">
                         <div>
                             <div id="media_video" class="ant-row-flex ant-row-flex-center ant-row-flex-middle" style="height: 100%;">

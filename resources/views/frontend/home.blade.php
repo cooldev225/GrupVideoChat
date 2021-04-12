@@ -128,6 +128,26 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="ant-row ant-form-item">
+                                    <div class="ant-col ant-form-item-label">
+                                        <label for="GroupForm_maxPeople" class="ant-form-item-required ant-form-item-no-colon" title="Maximum People">Language</label>
+                                    </div>
+                                    <div class="ant-col ant-form-item-control-wrapper">
+                                        <div class="ant-form-item-control">
+                                            <span class="ant-form-item-children">
+                                                <span class="ant-input-affix-wrapper">
+                                                    <select id="room_lang" class="ant-input">
+                                                        <option value="0">English</option>
+                                                        <option value="1">Portuguese</option>
+                                                        <option value="2">Spanish</option>
+                                                        <option value="3">Chinese</option>
+                                                    </select>
+                                                    <span class="ant-input-suffix"></span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="ant-col ant-col-md-8" style="padding-left: 8px; padding-right: 8px;">
                                 <div>
@@ -151,7 +171,31 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+                                    <div class="ant-row ant-form-item">
+                                        <div class="ant-col ant-form-item-label">
+                                            <label for="GroupForm_maxPeople" class="ant-form-item-required ant-form-item-no-colon" title="Maximum People">Maximum People</label>
+                                        </div>
+                                        <div class="ant-col ant-form-item-control-wrapper">
+                                            <div class="ant-form-item-control">
+                                                <span class="ant-form-item-children">
+                                                    <span class="ant-input-affix-wrapper">
+                                                        <select id="room_level" class="ant-input">
+                                                            <option value="0">Any Level</option>
+                                                            <option value="1">Beginner</option>
+                                                            <option value="2">Upper Beginner</option>
+                                                            <option value="3">Intermediate</option>
+                                                            <option value="4">Upper Intermediate</option>
+                                                            <option value="5">Advanced</option>
+                                                            <option value="6">Upper Advanced</option>
+                                                            <option value="7">Intermediate</option>
+                                                            <option value="8">Intermediate</option>
+                                                        </select>
+                                                        <span class="ant-input-suffix"></span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
