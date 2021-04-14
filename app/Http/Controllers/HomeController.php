@@ -47,11 +47,11 @@ class HomeController extends Controller
     {
         $rooms = [];
         try {
-            $client = new Client($this->sid, $this->token);
-            $allRooms = $client->video->rooms->read([]);
-            $rooms = array_map(function($room) {
-                return $room->uniqueName;
-            }, $allRooms);
+            //$client = new Client($this->sid, $this->token);
+            //$allRooms = $client->video->rooms->read([]);
+            //$rooms = array_map(function($room) {
+            //    return $room->uniqueName;
+            //}, $allRooms);
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
         }
@@ -70,8 +70,8 @@ class HomeController extends Controller
     }
     public function getRoomsView(){
         DB::update("set time_zone = '-03:00';");
-        RoomCharge::select()->whereRaw('TIMESTAMPDIFF(HOUR, TIMESTAMP(updated_at), CURRENT_TIMESTAMP)>3')->delete();
-        $rooms=Room::select()->whereRaw('TIMESTAMPDIFF(HOUR, TIMESTAMP(updated_at), CURRENT_TIMESTAMP)>1')->get();
+        RoomCharge::select()->whereRaw('TIMESTAMPDIFF(HOUR, TIMESTAMP(updated_at), CURRENT_TIMESTAMP)>1')->delete();
+        $rooms=Room::select()->whereRaw('TIMESTAMPDIFF(MINUTE, TIMESTAMP(updated_at), CURRENT_TIMESTAMP)>10')->get();
         foreach($rooms as $room){
             if(RoomCharge::select()->where('room_id','=',$room['id'])->count()==0)
                 Room::find($room['id'])->delete();

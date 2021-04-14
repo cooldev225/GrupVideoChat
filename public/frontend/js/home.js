@@ -1,7 +1,8 @@
 jQuery(document).ready(function() {
     refresh_rooms();
     $('.header-profile-dropdown').css('display','none');
-    $('.ant-modal').css('display','none');
+    $('#group_modal').css('display','none');
+    $('#loginalert_modal').css('display','none');
     $('.header-profile').on('click',function(){
         $('.header-profile-dropdown').toggle();
     });
@@ -16,7 +17,14 @@ jQuery(document).ready(function() {
             //alert('Content removed! Current content:' + '\n\n' + this.innerHTML);
         }    
     });
+    $("#btn_signin_alert").on('click',function(){
+        $("#loginalert_modal").fadeOut();
+        $('.g-signin2 .ant-btn').trigger('click');
+        let googleSignInBtn = document.getElementById("g-signin2");
+        googleSignInBtn.click();
+    });
 });
+
 function onLoad() {
     gapi.load('auth2', function() {
       gapi.auth2.init();
@@ -64,7 +72,7 @@ function showCreateModal(){
     $('.ghost-div').css('left',-$(window).width());
     $('.ghost-div').css('top',-140);
     $('#room_name').val('');
-    $('.ant-modal').fadeIn();
+    $('#group_modal').fadeIn();
 }
 function refresh_rooms(){
     var form_data = new FormData();
@@ -119,7 +127,7 @@ function submitGroup(){
 
         }
     });
-    $('.ant-modal').fadeOut();
+    $('#group_modal').fadeOut();
 }
 
 
