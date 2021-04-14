@@ -1,6 +1,6 @@
 @php
-$lang=explode(",","English,Portuguese,Spanish,Chinese");
-$level=explode(",","Any Level,Beginner,Upper Beginner,Intermediate,Upper Intermediate,Advanced,Upper Advanced,Intermediate,Intermediate");
+$lang=explode(",","English,Mandarin Chinese,Hindi,Spanish,Arabic,Bengali,French,Russian,Portuguese,Urdu,Indonesian,German,Japanese,Turkish");
+$level=explode(",","Any Level,Beginner,Upper Beginner,Intermediate,Upper Intermediate,Advanced,Upper Advanced");
 @endphp
 @foreach($rooms as $room)
                     <div class="ant-col ant-col-xs-24 ant-col-sm-24 ant-col-md-12 ant-col-lg-12 ant-col-xl-12 ant-col-xxl-12" style="padding-left: 12px; padding-right: 12px;">
